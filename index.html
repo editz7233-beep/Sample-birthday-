@@ -67,7 +67,13 @@ button{
   height:100%;
   top:0;
   left:0;
+  z-index:0; /* ✅ FIX */
 }
+
+#s0{
+  z-index:1; /* ✅ FIX */
+}
+
 #clickHeart{
   position:absolute;
   bottom:80px;
@@ -77,6 +83,7 @@ button{
   cursor:pointer;
   animation:pulse 1.5s infinite;
 }
+
 @keyframes pulse{
   0%{transform:scale(1);}
   50%{transform:scale(1.1);}
@@ -134,35 +141,29 @@ button{
 
 <div id="stars"></div>
 
-<!-- 🌳 INTRO -->
 <div id="s0" class="screen show">
   <canvas id="treeCanvas"></canvas>
   <div id="clickHeart">💗 Click Me :) Birthday Queen 💗</div>
 </div>
 
-<!-- 1 -->
 <div id="s1" class="screen">
   <h1 id="typing"></h1>
 </div>
 
-<!-- 2 -->
 <div id="s2" class="screen">
   <h1>Get Ready 🎉</h1>
   <h2 id="timer">5</h2>
 </div>
 
-<!-- 3 -->
 <div id="s3" class="screen">
   <h1 id="nameAnim"></h1>
   <div id="cake">🎂</div>
   <button onclick="blow()">Blow Candles 🕯️</button>
 </div>
 
-<!-- 4 -->
 <div id="s4" class="screen">
   <h2>Memory Lane 📸</h2>
 
-  <!-- ✅ YOUR UPDATED SLIDES -->
   <img class="slide active" src="D1.jpg" data-msg="Some moments don’t ask for attention…<br>they just stay quietly with you.<br>This one feels like that kind of memory.<br>Soft, simple… and somehow important ❤️">
 
   <img class="slide" src="D2.jpg" data-msg="I don’t remember what we were doing here,<br>but I remember how it felt.<br>There’s something about this moment…<br>that just feels warm and real ✨">
@@ -176,7 +177,6 @@ button{
   <div id="photoMsg">Tap a memory ❤️</div>
 </div>
 
-<!-- 5 -->
 <div id="s5" class="screen">
   <h1 id="finalMsg"></h1>
 </div>
@@ -185,7 +185,6 @@ button{
 
 <script>
 
-/* screens */
 let s0=document.getElementById("s0");
 let s1=document.getElementById("s1");
 let s2=document.getElementById("s2");
@@ -201,7 +200,6 @@ function createStars(){
     s.className="star";
     s.style.left=Math.random()*100+"%";
     s.style.top=Math.random()*100+"%";
-    s.style.animationDuration=(Math.random()*2+1)+"s";
     container.appendChild(s);
   }
 }
@@ -214,12 +212,15 @@ let ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
+/* ✅ FIXED TREE DRAW */
 function drawTree(x,y,len,angle,depth){
   if(depth===0)return;
+
   let x2=x+len*Math.cos(angle);
   let y2=y-len*Math.sin(angle);
 
-  ctx.strokeStyle="#ff99cc";
+  ctx.strokeStyle="#ff66aa"; /* FIX */
+  ctx.lineWidth=4; /* FIX */
   ctx.beginPath();
   ctx.moveTo(x,y);
   ctx.lineTo(x2,y2);
@@ -228,28 +229,19 @@ function drawTree(x,y,len,angle,depth){
   drawTree(x2,y2,len*0.7,angle+0.5,depth-1);
   drawTree(x2,y2,len*0.7,angle-0.5,depth-1);
 }
-drawTree(canvas.width/2,canvas.height,100,Math.PI/2,8);
 
-function bloomHearts(){
-  for(let i=0;i<120;i++){
-    let h=document.createElement("div");
-    h.innerHTML="💖";
-    h.style.position="absolute";
-    h.style.left=(window.innerWidth/2+(Math.random()-0.5)*200)+"px";
-    h.style.top=(window.innerHeight/2-Math.random()*200)+"px";
-    h.style.animation="float 4s linear";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),4000);
-  }
-}
+drawTree(canvas.width/2,canvas.height,120,Math.PI/2,9); /* slightly bigger */
 
+/* CLICK */
 clickHeart.onclick=()=>{
-  bloomHearts();
-  setTimeout(()=>{
-    switchS(s0,s1);
-    type();
-  },1500);
+  switchS(s0,s1);
+  type();
 };
+
+function switchS(a,b){
+  a.classList.remove("show");
+  setTimeout(()=>b.classList.add("show"),500);
+}
 
 /* typing */
 let text="Hey Deesha...<br>There’s something I wanted you to feel 💫";
@@ -277,124 +269,8 @@ function startCountdown(){
     if(t==0){
       clearInterval(cd);
       switchS(s2,s3);
-      animateName();
     }
   },1000);
-}
-
-/* name */
-function animateName(){
-  let name="DEESHA";
-  name.split("").forEach((l,i)=>{
-    let span=document.createElement("span");
-    span.innerText=l;
-    span.style.animation=`fly 1s ${i*0.2}s forwards`;
-    span.style.textShadow="0 0 10px #ff66aa";
-    nameAnim.appendChild(span);
-  });
-}
-
-/* slideshow */
-let slides=document.querySelectorAll(".slide");
-let k=0, interval;
-
-function randomEffect(el){
-  let effects=["scale(1.1) rotate(2deg)","scale(1) rotate(-2deg)","scale(1.05)"];
-  el.style.transform=effects[Math.floor(Math.random()*effects.length)];
-}
-
-function heartBurst(){
-  for(let i=0;i<10;i++){
-    let h=document.createElement("div");
-    h.innerHTML="💗";
-    h.style.position="absolute";
-    h.style.left=Math.random()*100+"%";
-    h.style.top="100%";
-    h.style.animation="float 3s linear";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),3000);
-  }
-}
-
-function slideshow(){
-  interval=setInterval(()=>{
-    slides[k].classList.remove("active");
-    k=(k+1)%slides.length;
-    slides[k].classList.add("active");
-    randomEffect(slides[k]);
-    photoMsg.innerHTML=slides[k].getAttribute("data-msg");
-
-    if(Math.random()>0.6) heartBurst();
-
-  },3000);
-}
-
-slides.forEach(slide=>{
-  slide.onclick=()=>{
-    photoMsg.innerHTML=slide.getAttribute("data-msg");
-  };
-});
-
-/* blow */
-function blow(){
-  music.volume=0;
-  music.play().then(()=>{
-    let v=0;
-    let fade=setInterval(()=>{
-      if(v<0.5){v+=0.05;music.volume=v;}
-      else clearInterval(fade);
-    },200);
-  });
-
-  confetti();
-  switchS(s3,s4);
-  slideshow();
-
-  setTimeout(()=>{
-    switchS(s4,s5);
-    typeFinal();
-  },18000);
-}
-
-/* final */
-let finalText=`Not everything needs a name… ❤️
-
-But some bonds stay,
-quietly constant,
-even when life keeps changing.
-
-You’re one of those rare parts of my life
-that I never want to lose ✨
-
-Happy Birthday, Deesha 🎂`;
-
-let z=0;
-function typeFinal(){
-  if(z<finalText.length){
-    finalMsg.innerHTML+=finalText.charAt(z);
-    z++;
-    setTimeout(typeFinal,50);
-  }
-}
-
-/* confetti */
-function confetti(){
-  for(let i=0;i<40;i++){
-    let c=document.createElement("div");
-    c.innerHTML="🎉";
-    c.style.position="absolute";
-    c.style.left=Math.random()*100+"%";
-    c.style.top="-10px";
-    c.style.animation="fall 3s linear";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
-}
-
-/* switch */
-function switchS(a,b){
-  a.classList.remove("show");
-  setTimeout(()=>b.classList.add("show"),500);
 }
 
 </script>
