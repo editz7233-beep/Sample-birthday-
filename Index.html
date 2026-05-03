@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>For Deesha 🎂</title>
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:Segoe UI;
+  text-align:center;
+  overflow:hidden;
+}
+
+/* 🌌 STARS */
+#stars{
+  position:fixed;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  animation: twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+  from{opacity:0.2;}
+  to{opacity:1;}
+}
+
+/* screens */
+.screen{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  opacity:0;
+  transition:1s ease;
+}
+.show{opacity:1;}
+
+h1{color:#ff66aa;}
+
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:20px;
+  background:#ff66aa;
+  color:white;
+  margin-top:20px;
+}
+
+/* 🌳 TREE INTRO */
+#treeCanvas{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+}
+#clickHeart{
+  position:absolute;
+  bottom:80px;
+  width:100%;
+  text-align:center;
+  font-size:18px;
+  color:#ff99cc;
+  cursor:pointer;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.1);}
+  100%{transform:scale(1);}
+}
+
+/* cake */
+#cake{
+  font-size:90px;
+  text-shadow:0 0 20px orange, 0 0 40px red;
+  animation: glow 1s infinite alternate;
+}
+@keyframes glow{
+  from{ text-shadow:0 0 10px orange; }
+  to{ text-shadow:0 0 40px red; }
+}
+
+/* animations */
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+@keyframes fall{
+  to{transform:translateY(100vh);}
+}
+@keyframes fly{
+  from{transform:translateY(-100px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+
+/* slideshow */
+.slide{
+  width:240px;
+  border-radius:12px;
+  display:none;
+  opacity:0;
+  transform:scale(0.8) rotate(-5deg);
+  transition:0.6s;
+}
+.slide.active{
+  display:block;
+  opacity:1;
+  transform:scale(1) rotate(0deg);
+}
+
+#photoMsg{
+  margin-top:15px;
+  color:#ffccdd;
+  min-height:40px;
+}
+
+/* ending */
+#s5{
+  background: rgba(0,0,0,0.85);
+  padding:20px;
+  border-radius:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+
+<!-- 🌳 INTRO TREE -->
+<div id="s0" class="screen show">
+  <canvas id="treeCanvas"></canvas>
+  <div id="clickHeart">💗 Click Me :) Birthday Queen 💗</div>
+</div>
+
+<!-- 1 -->
+<div id="s1" class="screen">
+  <h1 id="typing"></h1>
+</div>
+
+<!-- 2 -->
+<div id="s2" class="screen">
+  <h1>Get Ready 🎉</h1>
+  <h2 id="timer">5</h2>
+</div>
+
+<!-- 3 -->
+<div id="s3" class="screen">
+  <h1 id="nameAnim"></h1>
+  <div id="cake">🎂</div>
+  <button onclick="blow()">Blow Candles 🕯️</button>
+</div>
+
+<!-- 4 -->
+<div id="s4" class="screen">
+  <h2>Memory Lane 📸</h2>
+
+  <img class="slide active" src="D1.jpg" data-msg="You make moments feel lighter ❤️">
+  <img class="slide" src="D2.jpg" data-msg="This one... just stays in my head 💭">
+  <img class="slide" src="D3.jpg" data-msg="Some smiles don’t fade ✨">
+  <img class="slide" src="D4.jpg" data-msg="This feels like a story I’d reread 📖">
+  <img class="slide" src="D5.jpg" data-msg="And this... yeah, this is special 💖">
+
+  <div id="photoMsg">Tap a memory ❤️</div>
+</div>
+
+<!-- 5 -->
+<div id="s5" class="screen">
+  <h1 id="finalMsg"></h1>
+</div>
+
+<audio id="music" src="song.mp3"></audio>
+
+<script>
+
+/* screens */
+let s0 = document.getElementById("s0");
+let s1 = document.getElementById("s1");
+let s2 = document.getElementById("s2");
+let s3 = document.getElementById("s3");
+let s4 = document.getElementById("s4");
+let s5 = document.getElementById("s5");
+
+/* 🌌 stars */
+for(let i=0;i<120;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  document.getElementById("stars").appendChild(s);
+}
+
+/* 🌳 tree */
+let canvas = document.getElementById("treeCanvas");
+let ctx = canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function drawTree(x,y,len,angle,depth){
+  if(depth===0)return;
+  let x2=x+len*Math.cos(angle);
+  let y2=y-len*Math.sin(angle);
+
+  ctx.strokeStyle="#ff99cc";
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.lineTo(x2,y2);
+  ctx.stroke();
+
+  drawTree(x2,y2,len*0.7,angle+0.5,depth-1);
+  drawTree(x2,y2,len*0.7,angle-0.5,depth-1);
+}
+drawTree(canvas.width/2,canvas.height,100,Math.PI/2,8);
+
+function bloom(){
+  for(let i=0;i<120;i++){
+    let h=document.createElement("div");
+    h.innerHTML="💖";
+    h.style.position="absolute";
+    h.style.left=Math.random()*100+"%";
+    h.style.top="50%";
+    h.style.animation="float 4s linear";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  }
+}
+
+clickHeart.onclick=()=>{
+  bloom();
+  setTimeout(()=>{
+    switchS(s0,s1);
+    type();
+  },1500);
+};
+
+/* typing */
+let text="Hey Deesha...<br>There’s something I wanted you to feel 💫";
+let i=0;
+function type(){
+  if(i<text.length){
+    typing.innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(type,40);
+  } else {
+    setTimeout(()=>{
+      switchS(s1,s2);
+      startCountdown();
+    },1000);
+  }
+}
+
+/* countdown */
+function startCountdown(){
+  let t=5;
+  timer.innerText=t;
+  let cd=setInterval(()=>{
+    t--;
+    timer.innerText=t;
+    if(t==0){
+      clearInterval(cd);
+      switchS(s2,s3);
+      animateName();
+    }
+  },1000);
+}
+
+/* name */
+function animateName(){
+  let name="DEESHA";
+  name.split("").forEach((l,i)=>{
+    let span=document.createElement("span");
+    span.innerText=l;
+    span.style.animation=`fly 1s ${i*0.2}s forwards`;
+    span.style.textShadow="0 0 10px #ff66aa";
+    nameAnim.appendChild(span);
+  });
+}
+
+/* blow */
+function blow(){
+  music.play().catch(()=>{});
+  confetti();
+  switchS(s3,s4);
+  slideshow();
+
+  setTimeout(()=>{
+    switchS(s4,s5);
+    typeFinal();
+  },18000);
+}
+
+/* slideshow */
+let slides=document.querySelectorAll(".slide");
+let k=0;
+let interval;
+
+function slideshow(){
+  interval=setInterval(()=>{
+    slides[k].classList.remove("active");
+    k=(k+1)%slides.length;
+    slides[k].classList.add("active");
+
+    if(Math.random()>0.6){
+      heartBurst();
+    }
+  },3000);
+}
+
+slides.forEach(slide=>{
+  slide.onclick=()=>{
+    photoMsg.innerText=slide.getAttribute("data-msg");
+  };
+});
+
+function heartBurst(){
+  for(let i=0;i<10;i++){
+    let h=document.createElement("div");
+    h.innerHTML="💗";
+    h.style.position="absolute";
+    h.style.left=Math.random()*100+"%";
+    h.style.top="100%";
+    h.style.animation="float 3s linear";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),3000);
+  }
+}
+
+/* final */
+let finalText=`Not everything needs a name… ❤️
+
+But some bonds stay,
+quietly constant,
+even when life keeps changing.
+
+You’re one of those rare parts of my life
+that I never want to lose ✨
+
+Happy Birthday, Deesha 🎂`;
+
+let z=0;
+function typeFinal(){
+  if(z<finalText.length){
+    finalMsg.innerHTML+=finalText.charAt(z);
+    z++;
+    setTimeout(typeFinal,50);
+  }
+}
+
+/* confetti */
+function confetti(){
+  for(let i=0;i<40;i++){
+    let c=document.createElement("div");
+    c.innerHTML="🎉";
+    c.style.position="absolute";
+    c.style.left=Math.random()*100+"%";
+    c.style.top="-10px";
+    c.style.animation="fall 3s linear";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+/* switch */
+function switchS(a,b){
+  a.classList.remove("show");
+  setTimeout(()=>b.classList.add("show"),500);
+}
+</script>
+
+</body>
+</html>
