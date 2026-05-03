@@ -158,7 +158,7 @@ button{
 <div id="s3" class="screen">
   <h1 id="nameAnim"></h1>
   <div id="cake">🎂</div>
-  <button onclick="blow()">Blow Candles 🕯️</button>
+  <button id="blowBtn">Blow Candles 🕯️</button>
 </div>
 
 <div id="s4" class="screen">
@@ -241,6 +241,7 @@ clickHeart.onclick=()=>{
 function switchS(a,b){
   a.classList.remove("show");
   setTimeout(()=>b.classList.add("show"),500);
+  document.getElementById("blowBtn").addEventListener("click", blow);
 }
 
 /* typing */
