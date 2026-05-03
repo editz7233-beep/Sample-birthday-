@@ -241,7 +241,9 @@ clickHeart.onclick=()=>{
 function switchS(a,b){
   a.classList.remove("show");
   setTimeout(()=>b.classList.add("show"),500);
+  window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("blowBtn").addEventListener("click", blow);
+});
 }
 
 /* typing */
