@@ -22,6 +22,7 @@ body{
   top:0;
   left:0;
   z-index:-1;
+  overflow:hidden;
 }
 .star{
   position:absolute;
@@ -29,6 +30,7 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
+  opacity:0.8;
   animation: twinkle 2s infinite alternate;
 }
 @keyframes twinkle{
@@ -56,10 +58,9 @@ button{
   border-radius:20px;
   background:#ff66aa;
   color:white;
-  margin-top:20px;
 }
 
-/* 🌳 TREE INTRO */
+/* 🌳 TREE */
 #treeCanvas{
   position:absolute;
   width:100%;
@@ -72,7 +73,6 @@ button{
   bottom:80px;
   width:100%;
   text-align:center;
-  font-size:18px;
   color:#ff99cc;
   cursor:pointer;
   animation:pulse 1.5s infinite;
@@ -86,8 +86,8 @@ button{
 /* cake */
 #cake{
   font-size:90px;
-  text-shadow:0 0 20px orange, 0 0 40px red;
-  animation: glow 1s infinite alternate;
+  text-shadow:0 0 20px orange,0 0 40px red;
+  animation:glow 1s infinite alternate;
 }
 @keyframes glow{
   from{ text-shadow:0 0 10px orange; }
@@ -107,7 +107,7 @@ button{
   to{transform:translateY(0);opacity:1;}
 }
 
-/* slideshow */
+/* slides */
 .slide{
   width:240px;
   border-radius:12px;
@@ -127,13 +127,6 @@ button{
   color:#ffccdd;
   min-height:40px;
 }
-
-/* ending */
-#s5{
-  background: rgba(0,0,0,0.85);
-  padding:20px;
-  border-radius:15px;
-}
 </style>
 </head>
 
@@ -141,7 +134,7 @@ button{
 
 <div id="stars"></div>
 
-<!-- 🌳 INTRO TREE -->
+<!-- 🌳 INTRO -->
 <div id="s0" class="screen show">
   <canvas id="treeCanvas"></canvas>
   <div id="clickHeart">💗 Click Me :) Birthday Queen 💗</div>
@@ -169,11 +162,16 @@ button{
 <div id="s4" class="screen">
   <h2>Memory Lane 📸</h2>
 
-  <img class="slide active" src="D1.jpg" data-msg="You make moments feel lighter ❤️">
-  <img class="slide" src="D2.jpg" data-msg="This one... just stays in my head 💭">
-  <img class="slide" src="D3.jpg" data-msg="Some smiles don’t fade ✨">
-  <img class="slide" src="D4.jpg" data-msg="This feels like a story I’d reread 📖">
-  <img class="slide" src="D5.jpg" data-msg="And this... yeah, this is special 💖">
+  <!-- ✅ YOUR UPDATED SLIDES -->
+  <img class="slide active" src="D1.jpg" data-msg="Some moments don’t ask for attention…<br>they just stay quietly with you.<br>This one feels like that kind of memory.<br>Soft, simple… and somehow important ❤️">
+
+  <img class="slide" src="D2.jpg" data-msg="I don’t remember what we were doing here,<br>but I remember how it felt.<br>There’s something about this moment…<br>that just feels warm and real ✨">
+
+  <img class="slide" src="D3.jpg" data-msg="This picture doesn’t say much out loud,<br>but it says everything I needed to feel.<br>Some memories don’t fade with time…<br>they just become part of you 💭">
+
+  <img class="slide" src="D4.jpg" data-msg="If I could pause time somewhere,<br>it might be in a moment like this.<br>Nothing loud, nothing dramatic…<br>just quietly perfect in its own way 💖">
+
+  <img class="slide" src="D5.jpg" data-msg="And then there are moments like this,<br>that don’t need explaining at all.<br>You just look at them… and smile.<br>Because somehow, they mean everything ❤️">
 
   <div id="photoMsg">Tap a memory ❤️</div>
 </div>
@@ -188,26 +186,31 @@ button{
 <script>
 
 /* screens */
-let s0 = document.getElementById("s0");
-let s1 = document.getElementById("s1");
-let s2 = document.getElementById("s2");
-let s3 = document.getElementById("s3");
-let s4 = document.getElementById("s4");
-let s5 = document.getElementById("s5");
-let clickHeart = document.getElementById("clickHeart");
+let s0=document.getElementById("s0");
+let s1=document.getElementById("s1");
+let s2=document.getElementById("s2");
+let s3=document.getElementById("s3");
+let s4=document.getElementById("s4");
+let s5=document.getElementById("s5");
 
 /* 🌌 stars */
-for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"%";
-  s.style.top=Math.random()*100+"%";
-  document.getElementById("stars").appendChild(s);
+function createStars(){
+  let container=document.getElementById("stars");
+  for(let i=0;i<120;i++){
+    let s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"%";
+    s.style.top=Math.random()*100+"%";
+    s.style.animationDuration=(Math.random()*2+1)+"s";
+    container.appendChild(s);
+  }
 }
+createStars();
 
 /* 🌳 tree */
-let canvas = document.getElementById("treeCanvas");
-let ctx = canvas.getContext("2d");
+let canvas=document.getElementById("treeCanvas");
+let ctx=canvas.getContext("2d");
+
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
@@ -227,13 +230,13 @@ function drawTree(x,y,len,angle,depth){
 }
 drawTree(canvas.width/2,canvas.height,100,Math.PI/2,8);
 
-function bloom(){
+function bloomHearts(){
   for(let i=0;i<120;i++){
     let h=document.createElement("div");
     h.innerHTML="💖";
     h.style.position="absolute";
-    h.style.left=Math.random()*100+"%";
-    h.style.top="50%";
+    h.style.left=(window.innerWidth/2+(Math.random()-0.5)*200)+"px";
+    h.style.top=(window.innerHeight/2-Math.random()*200)+"px";
     h.style.animation="float 4s linear";
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),4000);
@@ -241,7 +244,7 @@ function bloom(){
 }
 
 clickHeart.onclick=()=>{
-  bloom();
+  bloomHearts();
   setTimeout(()=>{
     switchS(s0,s1);
     type();
@@ -256,7 +259,7 @@ function type(){
     typing.innerHTML+=text.charAt(i);
     i++;
     setTimeout(type,40);
-  } else {
+  }else{
     setTimeout(()=>{
       switchS(s1,s2);
       startCountdown();
@@ -291,41 +294,14 @@ function animateName(){
   });
 }
 
-/* blow */
-function blow(){
-  music.play().catch(()=>{});
-  confetti();
-  switchS(s3,s4);
-  slideshow();
-
-  setTimeout(()=>{
-    switchS(s4,s5);
-    typeFinal();
-  },18000);
-}
-
 /* slideshow */
 let slides=document.querySelectorAll(".slide");
-let k=0;
-let interval;
+let k=0, interval;
 
-function slideshow(){
-  interval=setInterval(()=>{
-    slides[k].classList.remove("active");
-    k=(k+1)%slides.length;
-    slides[k].classList.add("active");
-
-    if(Math.random()>0.6){
-      heartBurst();
-    }
-  },3000);
+function randomEffect(el){
+  let effects=["scale(1.1) rotate(2deg)","scale(1) rotate(-2deg)","scale(1.05)"];
+  el.style.transform=effects[Math.floor(Math.random()*effects.length)];
 }
-
-slides.forEach(slide=>{
-  slide.onclick=()=>{
-    photoMsg.innerText=slide.getAttribute("data-msg");
-  };
-});
 
 function heartBurst(){
   for(let i=0;i<10;i++){
@@ -338,6 +314,46 @@ function heartBurst(){
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),3000);
   }
+}
+
+function slideshow(){
+  interval=setInterval(()=>{
+    slides[k].classList.remove("active");
+    k=(k+1)%slides.length;
+    slides[k].classList.add("active");
+    randomEffect(slides[k]);
+    photoMsg.innerHTML=slides[k].getAttribute("data-msg");
+
+    if(Math.random()>0.6) heartBurst();
+
+  },3000);
+}
+
+slides.forEach(slide=>{
+  slide.onclick=()=>{
+    photoMsg.innerHTML=slide.getAttribute("data-msg");
+  };
+});
+
+/* blow */
+function blow(){
+  music.volume=0;
+  music.play().then(()=>{
+    let v=0;
+    let fade=setInterval(()=>{
+      if(v<0.5){v+=0.05;music.volume=v;}
+      else clearInterval(fade);
+    },200);
+  });
+
+  confetti();
+  switchS(s3,s4);
+  slideshow();
+
+  setTimeout(()=>{
+    switchS(s4,s5);
+    typeFinal();
+  },18000);
 }
 
 /* final */
@@ -380,6 +396,7 @@ function switchS(a,b){
   a.classList.remove("show");
   setTimeout(()=>b.classList.add("show"),500);
 }
+
 </script>
 
 </body>
